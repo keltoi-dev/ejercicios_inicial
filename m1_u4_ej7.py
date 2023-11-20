@@ -41,7 +41,7 @@ lista = ["elemento1n1", "elemento2n1", "elemento3n1",
 def recorre_lista(item, espacio):
     global contador
     contador += 1
-    print(espacio + "\n NIVEL", contador)
+    print(espacio + " GRADO DE ANIDAMIENTO", contador)
     for x in item:
         if isinstance(x, list): 
             recorre_lista(x, espacio + "   ")
