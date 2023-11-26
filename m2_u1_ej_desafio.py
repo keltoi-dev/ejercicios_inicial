@@ -12,13 +12,12 @@ def alta():
     print(titulo, ruta, descripcion)
 
 def sorpresa():
-    print("Sorpresa")
     global color
     if color == 0:
         base.config(background = "#fddcb0")
         color = 1
     else:
-        base.config(background = "")
+        base.config(background = "#f0f0f0")
         color = 0
 
 color = 0
