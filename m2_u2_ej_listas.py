@@ -19,13 +19,13 @@ def alta(producto, cantidad, precio, tree):
         fila = {str(el_id): [producto, cantidad, precio]}
         la_lista.update(fila)
         el_id +=1
-        t_val.set("Consultar")
+        calcular()
         print("Estoy en alta todo ok")
         actualizar_treeview(tree)
     else:
         print("error en campo producto")
 
-def consultar():
+def calcular():
     global total
     total = 0
     for i in la_lista:
@@ -33,13 +33,35 @@ def consultar():
 
     t_val.set(total)
 
+def consultar(tree):
+    valor = tree.selection()
+    item = tree.item(valor)
+
+    a_val.set(item["values"][0])
+    b_val.set(item["values"][1])
+    c_val.set(item["values"][2])
+
+def modificar(tree):
+    valor = tree.selection()
+    item = tree.item(valor)
+
+    producto = a_val.get()
+    cantidad = b_val.get()
+    precio = c_val.get()
+
+    fila = {item["text"]: [producto, cantidad, precio]}
+    la_lista.update(fila)
+    print("La seleccion fue modificada")
+    calcular()
+    actualizar_treeview(tree)
+
 def borrar(tree):
 
     valor = tree.selection()
     # print(valor)   #('I005',)
     item = tree.item(valor)
     la_lista.pop(item["text"])
-    t_val.set("Consultar")
+    calcular()
     print("La seleccion fue eliminada")
     tree.delete(valor)
 
@@ -70,7 +92,7 @@ cantidad.grid(row=2, column=0, sticky=W)
 precio=Label(root, text="Precio")
 precio.grid(row=3, column=0, sticky=W)
 l_total = Label(root, text = "El total de la compra es:")
-l_total.grid(row= 11, column= 0, sticky=E, columnspan= 2)
+l_total.grid(row= 12, column= 0, sticky=E, columnspan= 2)
 
 # Defino variables para tomar valores de campos de entrada
 a_val, b_val, c_val = StringVar(), DoubleVar(), DoubleVar()
@@ -84,7 +106,7 @@ entrada2.grid(row = 2, column = 1)
 entrada3 = Entry(root, textvariable = c_val, width = w_ancho) 
 entrada3.grid(row = 3, column = 1)
 e_total = Entry(root, textvariable= t_val)
-e_total.grid(row= 11, column= 2)
+e_total.grid(row= 12, column= 2)
 
 # --------------------------------------------------
 # TREEVIEW
@@ -100,14 +122,18 @@ tree.heading("#0", text="ID")
 tree.heading("col1", text="Producto")
 tree.heading("col2", text="cantidad")
 tree.heading("col3", text="precio")
-tree.grid(row=10, column=0, columnspan=4)
+tree.grid(row=11, column=0, columnspan=4)
 
 boton_alta=Button(root, text="Alta", command=lambda:alta(a_val.get(), b_val.get(), c_val.get(), tree))
 boton_alta.grid(row=6, column=1)
 
-boton_consulta=Button(root, text="Consultar", command=lambda:consultar())
+boton_consulta=Button(root, text="Consultar", command=lambda:consultar(tree))
 boton_consulta.grid(row=7, column=1)
 
 boton_borrar=Button(root, text="Borrar", command=lambda:borrar(tree))
 boton_borrar.grid(row=8, column=1)
+
+boton_modificar=Button(root, text="Modifcar", command=lambda:modificar(tree))
+boton_modificar.grid(row=9, column=1)
+
 root.mainloop()
