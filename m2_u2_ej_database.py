@@ -14,85 +14,121 @@ def conectar_base():
 
 def hacer_tabla(conexion):
     cursor = conexion.cursor()
-    sql = "CREATE TABLE compras(id integer PRIMARY KEY AUTOINCREMENT, producto VARCHAR(20) NOT NULL, cantidad FLOAT, precio FLOAT)"
+    sql = "CREATE TABLE compras(id integer PRIMARY KEY AUTOINCREMENT, \
+    producto VARCHAR(20) NOT NULL, cantidad FLOAT, precio FLOAT)"
     cursor.execute(sql)
     conexion.commit()
 
-total = 0
-conexion = conectar_base()
-hacer_tabla(conexion)
+def consulta_base():
+    conexion = conectar_base()
+    cursor = conexion.cursor()
+    sql = "SELECT * FROM compras"
+    cursor.execute(sql)
+    la_lista = cursor.fetchall()
+    return la_lista
 
+total = 0
+try:
+    conexion = conectar_base()
+    hacer_tabla(conexion)
+except:
+    print("La base ya ha sido creada")
+
+# ----- FUNCION DE ALTA -----
 def alta(producto, cantidad, precio, tree):
 
     cadena = producto
     patron="^[A-Za-záéíóú]*$"  #regex para el campo cadena
     if(re.match(patron, cadena)):
-        
+        conexion = conectar_base()
+        cursor = conexion.cursor()
+        datos = (producto, cantidad, precio)
+        sql = "INSERT INTO compras(producto, cantidad, precio) VALUES (?, ?, ?)"
+        cursor.execute(sql, datos)
+        conexion.commit()
 
-        # fila = {str(el_id): [producto, cantidad, precio]}
-        # la_lista.update(fila)
-        # el_id +=1
         calcular()
         print("Estoy en alta todo ok")
         actualizar_treeview(tree)
     else:
         print("error en campo producto")
 
+# ----- FUNCION CALCULAR TOTAL -----
 def calcular():
-    global total
     total = 0
+    la_lista = consulta_base()
     for i in la_lista:
-        total += la_lista[i][1] * la_lista[i][2]
+        total += i[2] * i[3]
 
     t_val.set(total)
 
+# ----- FUNCION DE CONSULTA -----
 def consultar(tree):
-    valor = tree.selection()
-    item = tree.item(valor)
+    item = tree.item(tree.selection())
+    conexion = conectar_base()
+    cursor = conexion.cursor()
+    el_id = int(item["text"])
+    datos = (el_id, )
+    sql = "SELECT * FROM compras WHERE id = ?;"
+    cursor.execute(sql, datos)
+    la_lista = cursor.fetchall()
 
-    a_val.set(item["values"][0])
-    b_val.set(item["values"][1])
-    c_val.set(item["values"][2])
+    a_val.set(la_lista[0][1])
+    b_val.set(la_lista[0][2])
+    c_val.set(la_lista[0][3])
 
+# ----- FUNCION DE MODIFICACION -----
 def modificar(tree):
-    valor = tree.selection()
-    item = tree.item(valor)
-
+    item = tree.item(tree.selection())
+    el_id = int(item["text"])
     producto = a_val.get()
     cantidad = b_val.get()
     precio = c_val.get()
 
-    fila = {item["text"]: [producto, cantidad, precio]}
-    la_lista.update(fila)
+    conexion = conectar_base()
+    cursor = conexion.cursor()
+
+    datos = (producto, cantidad, precio, el_id)
+    sql = "UPDATE compras SET producto = ?, cantidad = ?, precio = ? WHERE id = ?;"
+    cursor.execute(sql, datos)
+    conexion.commit()
     print("La seleccion fue modificada")
     calcular()
     actualizar_treeview(tree)
 
+# ----- FUNCION DE BORRAR -----
 def borrar(tree):
-
     valor = tree.selection()
     item = tree.item(valor)
-    la_lista.pop(item["text"])
+    conexion = conectar_base()
+    cursor = conexion.cursor()
+    el_id = int(item["text"])
+    datos = (el_id, )
+    sql = "DELETE FROM compras WHERE id = ?;"
+    cursor.execute(sql, datos)
+    conexion.commit()
+
     calcular()
     print("La seleccion fue eliminada")
     tree.delete(valor)
 
+# ----- FUNCION ACTUALIZAR TREE -----
 def actualizar_treeview(mitreview):
-    global la_lista
+    la_lista = consulta_base()
 
     records = mitreview.get_children()
     for element in records:
         mitreview.delete(element)
 
     for fila in la_lista:
-        mitreview.insert("", 0, text=fila, values=(la_lista[fila][0], la_lista[fila][1], la_lista[fila][2]))
+        mitreview.insert("", 0, text=fila[0], values=(fila[1], fila[2], fila[3]))
 
 # ##############################################
 # VISTA
 # ##############################################
 
 root = Tk()
-root.title("Tarea POO")
+root.title("Tarea con Base de Datos")
         
 titulo = Label(root, text="Ingrese sus datos", bg="DarkOrchid3", fg="thistle1", height=1, width=60)
 titulo.grid(row=0, column=0, columnspan=4, padx=1, pady=1, sticky=W+E)
@@ -147,5 +183,8 @@ boton_borrar.grid(row=8, column=1)
 
 boton_modificar=Button(root, text="Modifcar", command=lambda:modificar(tree))
 boton_modificar.grid(row=9, column=1)
+
+calcular()
+actualizar_treeview(tree)
 
 root.mainloop()

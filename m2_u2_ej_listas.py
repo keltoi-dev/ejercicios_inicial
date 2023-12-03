@@ -9,6 +9,7 @@ el_id = 0
 la_lista = {}
 total = 0
 
+# ----- FUNCION DE ALTA -----
 def alta(producto, cantidad, precio, tree):
     global el_id
     global la_lista
@@ -25,6 +26,7 @@ def alta(producto, cantidad, precio, tree):
     else:
         print("error en campo producto")
 
+# ----- FUNCION CALCULAR TOTAL -----
 def calcular():
     global total
     total = 0
@@ -33,6 +35,7 @@ def calcular():
 
     t_val.set(total)
 
+# ----- FUNCION DE CONSULTA -----
 def consultar(tree):
     valor = tree.selection()
     item = tree.item(valor)
@@ -41,6 +44,7 @@ def consultar(tree):
     b_val.set(item["values"][1])
     c_val.set(item["values"][2])
 
+# ----- FUNCION DE MODIFICACION -----
 def modificar(tree):
     valor = tree.selection()
     item = tree.item(valor)
@@ -55,8 +59,8 @@ def modificar(tree):
     calcular()
     actualizar_treeview(tree)
 
+# ----- FUNCION DE BORRAR -----
 def borrar(tree):
-
     valor = tree.selection()
     # print(valor)   #('I005',)
     item = tree.item(valor)
@@ -65,6 +69,7 @@ def borrar(tree):
     print("La seleccion fue eliminada")
     tree.delete(valor)
 
+# ----- FUNCION ACTUALIZAR TREE -----
 def actualizar_treeview(mitreview):
     global la_lista
 
@@ -80,7 +85,7 @@ def actualizar_treeview(mitreview):
 # ##############################################
 
 root = Tk()
-root.title("Tarea POO")
+root.title("Tarea con Listas")
         
 titulo = Label(root, text="Ingrese sus datos", bg="DarkOrchid3", fg="thistle1", height=1, width=60)
 titulo.grid(row=0, column=0, columnspan=4, padx=1, pady=1, sticky=W+E)
