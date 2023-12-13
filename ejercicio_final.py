@@ -8,6 +8,7 @@ from tkinter.messagebox import *
 window = Tk()
 window.title("Evaluacion final - Python inicial")
 window.geometry("800x573")
+window.resizable(False, False)
 
 Label(window, text= "GESTION DE NOMINA DE EMPLEADOS", bg="#8BCC00", font= "Bold").grid(row= 0, column= 0, columnspan= 2, sticky= W+E)
 
@@ -73,24 +74,29 @@ e_art.grid(row= 7, column= 1, columnspan= 5)
 e_jornal = Entry(frame_datos, textvariable= var_jornal, width= 15)
 e_jornal.grid(row= 8, column= 1)
 
+btn_buscar = Button(frame_datos, text= "Buscar", width= 6)
+btn_buscar.grid(row= 1, column= 2, sticky= W)
+
 # Frame para treeview
 frame_tree = Frame(window, padx= 10, pady= 10, bd= 0, relief= "solid")
 frame_tree.grid(row= 2, column= 0, columnspan= 2)
 frame_tree.config(width= 800, height= 180)
 
 Label(frame_tree, text= "FILTRAR POR OBRA").grid(row= 0, column= 0, sticky= E)
+
 e_filtro = Entry(frame_tree, textvariable= var_filtro, width= 80)
 e_filtro.grid(row= 0, column= 1)
-btn_filtrar = Button(frame_tree, text= "FILTRAR")
+
+btn_filtrar = Button(frame_tree, text= "Filtrar")
 btn_filtrar.grid(row= 0, column= 2, sticky= W)
 
 tree = ttk.Treeview(frame_tree)
 tree["columns"] = ("col1", "col2", "col3", "col4", "col5")
-tree.column("#0", width= 30, minwidth= 15, anchor= W)
-tree.column("col1", width= 50, minwidth= 30)
+tree.column("#0", width= 20, minwidth= 10, anchor= W)
+tree.column("col1", width= 80, minwidth= 50)
 tree.column("col2", width= 200, minwidth= 80)
 tree.column("col3", width= 200, minwidth= 80)
-tree.column("col4", width= 200, minwidth= 80)
+tree.column("col4", width= 180, minwidth= 80)
 tree.column("col5", width= 100, minwidth= 80)
 tree.heading("#0", text= "ID")
 tree.heading("col1", text= "DNI")
