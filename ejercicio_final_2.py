@@ -1,6 +1,10 @@
 # Evaluacion final
 # German Fraga
 
+"""Parametros por default en funciones
+    Primero hacer consulta y buscar
+    filtro usar where en treeview"""
+
 from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *
@@ -17,11 +21,12 @@ def conect_database():
 
 def create_table(conexion):
     cursor = conexion.cursor()
-    sql = """CREATE TABLE empleados(id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                                    dni INTEGER NOT NULL, cuil INTEGER NOT NULL, 
-                                    nombres VARCHAR(30) NOT NULL, apellidos VARCHAR(30) NOT NULL,
-                                    domicilio VARCHAR(30), f_nacimiento VARCHAR(10), 
-                                    f_alta VARCHAR(10), obra VARCHAR(30), art VARCHAR(30), jornal FLOAT)"""
+    sql = """CREATE TABLE empleados(
+            id INTEGER PRIMARY KEY AUTOINCREMENT, 
+            dni INTEGER NOT NULL, cuil INTEGER NOT NULL, 
+            nombres VARCHAR(30) NOT NULL, apellidos VARCHAR(30) NOT NULL,
+            domicilio VARCHAR(30), f_nacimiento VARCHAR(10), f_alta VARCHAR(10),     
+            obra VARCHAR(30), art VARCHAR(30), jornal FLOAT)"""
     cursor.execute(sql)
     conexion.commit()
 
@@ -64,10 +69,11 @@ def create_record(data): # tree
     if not data[0] or not data[1] or not data[2] or not data[3]:
         l_status.config(text= "Complete todos los campos.", background= "red")
     else:
-        cadena = str(data[0])
-        patron="[0-9]{7,8}"
-        if(re.match(patron, cadena)):
-            sql = """INSERT INTO empleados(dni, cuil, nombres, apellidos, domicilio, f_nacimiento, f_alta, obra, art, jornal) 
+        cadena_dni, cadena_cuil= data[0], data[1]
+        patron_dni, patron_cuil="[0-9]{7,8}", "[0-9]{11}"
+        if (re.match(patron_dni, cadena_dni)) and (re.match(patron_cuil, cadena_cuil)):
+            sql = """INSERT INTO empleados(dni, cuil, nombres, apellidos, 
+                    domicilio, f_nacimiento, f_alta, obra, art, jornal) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
             modify_table(sql, data)
             l_status.config(text= "Los datos han sido guardados correctamente.", background= "#8BCC00")
@@ -95,10 +101,11 @@ window.title("Evaluacion final - Python inicial")
 # window.geometry("810x573")
 window.resizable(False, False)
 
-Label(window, text= "GESTION DE NOMINA DE EMPLEADOS", bg="#8BCC00", font= "Bold").grid(row= 0, column= 0, columnspan= 2, sticky= W+E)
+Label(window, text= "GESTION DE NOMINA DE EMPLEADOS", bg="#8BCC00", font= "Bold").grid(
+        row= 0, column= 0, columnspan= 2, sticky= W+E)
 
 # Definir variables
-var_dni, var_cuil = IntVar(), IntVar()
+var_dni, var_cuil = StringVar(), StringVar()
 var_nombre, var_apellido, var_domicilio = StringVar(), StringVar(), StringVar()
 var_fnacimiento, var_falta, var_obra, var_art = StringVar(), StringVar(), StringVar(), StringVar()
 var_jornal = DoubleVar()
@@ -111,21 +118,22 @@ frame_menu.grid(row= 1, column= 0)
 Label(frame_menu, text= "MENU", bg= "#c8c8c8", font= "Bold").grid(row= 0, column= 0, sticky= W+E)
 
 btn_alta = Button(frame_menu, text= "ALTA", width= 15, command= lambda: create_record(create_list()))
-btn_alta.grid(row= 1, column= 0, padx= 9, pady= 8)
+btn_alta.grid(row= 1, column= 0, padx= 9, pady= 12)
 btn_baja = Button(frame_menu, text= "BAJA", width= 15)
-btn_baja.grid(row= 2, column= 0, padx= 2, pady= 8)
+btn_baja.grid(row= 2, column= 0, padx= 2, pady= 12)
 btn_modificacion = Button(frame_menu, text= "MODIFICACION", width= 15)
-btn_modificacion.grid(row= 3, column= 0, padx= 2, pady= 8)
+btn_modificacion.grid(row= 3, column= 0, padx= 2, pady= 12)
 btn_consulta = Button(frame_menu, text= "CONSULTA", width= 15)
-btn_consulta.grid(row= 4, column= 0, padx= 2, pady= 8)
+btn_consulta.grid(row= 4, column= 0, padx= 2, pady= 12)
 btn_cerrar = Button(frame_menu, text= "CERRAR", width= 15)
-btn_cerrar.grid(row= 5, column= 0, padx= 2, pady= 8)
+btn_cerrar.grid(row= 5, column= 0, padx= 2, pady= 12)
 
 # Frame de datos
 frame_datos = Frame(window, padx= 10, pady= 10, bd= 1, relief= "solid")
 frame_datos.grid(row= 1, column= 1)
 
-Label(frame_datos, text= "INFORMACION DEL EMPLEADO", font= "Bold").grid(row= 0, column= 0, columnspan= 6, pady= 10, sticky= W+E)
+Label(frame_datos, text= "INFORMACION DEL EMPLEADO", font= "Bold").grid(
+        row= 0, column= 0, columnspan= 6, pady= 10, sticky= W+E)
 
 Label(frame_datos, text= "D.N.I.").grid(row= 1, column= 0, sticky= W)
 Label(frame_datos, text= "C.U.I.L").grid(row= 1, column= 4, sticky= E)
@@ -137,6 +145,8 @@ Label(frame_datos, text= "FECHA DE ALTA").grid(row= 5, column= 4, sticky= E)
 Label(frame_datos, text= "OBRA ASIGNADA").grid(row= 6, column= 0, sticky= W)
 Label(frame_datos, text= "ART o SEGURO").grid(row= 7, column= 0, sticky= W)
 Label(frame_datos, text= "JORNAL $").grid(row= 8, column= 0, sticky= W)
+Label(frame_datos, text= "* En el campo DNI y CUIL solo ingrese numeros sin ',' o '-'.", 
+            fg= "#ff0000").grid(row= 9, column= 1, columnspan= 6, sticky= W)
 
 e_dni = Entry(frame_datos, textvariable= var_dni, width= 15)
 e_dni.grid(row= 1, column= 1)
@@ -148,9 +158,13 @@ e_apellido = Entry(frame_datos, textvariable= var_apellido, width= 80)
 e_apellido.grid(row= 3, column= 1, columnspan= 5)
 e_direccion = Entry(frame_datos, textvariable= var_domicilio, width= 80)
 e_direccion.grid(row= 4, column= 1, columnspan= 5)
-e_fnacimiento = DateEntry(frame_datos, width=15, justify='center', date_pattern="dd-mm-yyyy",textvariable=var_fnacimiento, foreground= "#000000")
+e_fnacimiento = DateEntry(frame_datos, width=15, justify='center', 
+                    date_pattern="dd-mm-yyyy",textvariable=var_fnacimiento, 
+                    foreground= "#000000")
 e_fnacimiento.grid(row=5, column=1)
-e_falta = DateEntry(frame_datos, width=15, justify='center', date_pattern="dd-mm-yyyy",textvariable=var_falta, foreground= "#000000")
+e_falta = DateEntry(frame_datos, width=15, justify='center', 
+                date_pattern="dd-mm-yyyy",textvariable=var_falta, 
+                foreground= "#000000")
 e_falta.grid(row=5, column=5)
 e_obra = Entry(frame_datos, textvariable= var_obra, width= 80)
 e_obra.grid(row= 6, column= 1, columnspan= 5)
@@ -188,7 +202,7 @@ tree.heading("col1", text= "DNI")
 tree.heading("col2", text= "NOMBRES")
 tree.heading("col3", text= "APELLIDOS")
 tree.heading("col4", text= "OBRA ASIGNADA")
-tree.heading("col5", text= "JORNAL")
+tree.heading("col5", text= "JORNAL ($)")
 tree.grid(row= 1, column= 0, columnspan= 3)
 
 # Label status
