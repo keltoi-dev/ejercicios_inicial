@@ -65,12 +65,14 @@ def set_entry(data_list):
     var_obra.set(data_list[0][8])
     var_art.set(data_list[0][9])
     var_jornal.set(data_list[0][10])
-    if not var_dni:
+    if not data_list[0][1]:
+        l_status.config(text= "Ok.", background= "#8BCC00")
         e_dni.config(state= "normal")
         e_cuil.config(state= "normal")
     else:
-        e_dni.config()
-        e_cuil.config()
+        l_status.config(text= "Puede modificar o dar de baja al registro.", background= "#8BCC00")
+        e_dni.config(state= "disabled")
+        e_cuil.config(state= "disabled")
 
 # ----- FUNCION ALTA DE REGISTRO -----
 def create_record(data): # tree
@@ -105,7 +107,6 @@ def consult_record(event):
     sql = "SELECT * FROM empleados WHERE id = " + str(data)
     data_list = update_table(sql)
     set_entry(data_list)
-    l_status.config(text= "Ok.", background= "#8BCC00")
 
 # ----- FUNCION DE BUSQUEDA -----
 def search_record(indice):
