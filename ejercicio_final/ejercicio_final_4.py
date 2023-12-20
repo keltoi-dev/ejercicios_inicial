@@ -15,7 +15,7 @@ import re
 
 # ----- CONEXION CON LA BASE DE DATOS -----
 def conect_database():
-    ruta = os.getcwd() + os.sep
+    ruta = os.getcwd() + os.sep + "src" + os.sep
     conexion = sqlite3.connect(ruta + "nomina_database.db")
     return conexion
 
@@ -151,11 +151,13 @@ info = """
         AUTOR: German Fraga"""
 
 
-# ----- VISTA -----
+# ----- VISTA Y CONTROL -----
 window = Tk()
 window.title("Evaluacion final - Python inicial")
 # window.geometry("810x573")
 window.resizable(False, False)
+ruta = os.getcwd() + os.sep + "img" + os.sep
+window.iconname(ruta + "python.ico")
 
 menubar = Menu(window, relief="solid")
 menubar.add_cascade(label="Acerca de ...", command= lambda:showinfo("Acerca de ...", info))
@@ -185,7 +187,7 @@ btn_modificacion.grid(row= 3, column= 0, padx= 2, pady= 9)
 btn_consulta = Button(frame_menu, text= "LIMPIAR", width= 15, 
                     command= lambda: set_entry([["" for _ in range(11)] for _ in range(1)]))
 btn_consulta.grid(row= 4, column= 0, padx= 2, pady= 9)
-btn_cerrar = Button(frame_menu, text= "SALIR", width= 15, bg= "#ff1b1b", fg= "#ffffff", command= lambda: close_app())
+btn_cerrar = Button(frame_menu, text= "SALIR", width= 15, command= lambda: close_app())
 btn_cerrar.grid(row= 5, column= 0, padx= 2, pady= 8)
 
 # ----- FRAME DE DATOS -----
