@@ -65,6 +65,12 @@ def set_entry(data_list):
     var_obra.set(data_list[0][8])
     var_art.set(data_list[0][9])
     var_jornal.set(data_list[0][10])
+    if not var_dni:
+        e_dni.config(state= "normal")
+        e_cuil.config(state= "normal")
+    else:
+        e_dni.config()
+        e_cuil.config()
 
 # ----- FUNCION ALTA DE REGISTRO -----
 def create_record(data): # tree
