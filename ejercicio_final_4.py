@@ -72,7 +72,7 @@ def create_record(data): # tree
         l_status.config(text= "Complete todos los campos.", background= "#ff1b1b")
     else:
         cadena_dni, cadena_cuil= data[0], data[1]
-        patron_dni, patron_cuil="[0-9]{7,8}", "[0-9]{11}"
+        patron_dni, patron_cuil="^\d{7,8}$", "^\d{11}$"
         if (re.match(patron_dni, cadena_dni)) and (re.match(patron_cuil, cadena_cuil)):
             sql = "SELECT * from empleados WHERE dni='" + data[0] + "';"
             data_list = update_table(sql)
