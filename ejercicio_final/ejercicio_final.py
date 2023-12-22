@@ -49,8 +49,6 @@ def modify_table(sql, data):
 
 
 # ***** FUNCIONES PARA ALTAS - BAJAS - MODIFICACIONES *****
-
-
 # ----- FUNCION ALTA DE REGISTRO -----
 def create_record(data):  # tree
     if not data[0] or not data[1] or not data[2] or not data[3]:
