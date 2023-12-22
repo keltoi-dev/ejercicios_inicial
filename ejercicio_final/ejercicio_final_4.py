@@ -1,8 +1,5 @@
-# Evaluacion final
-# German Fraga
-
-""" Hacer modificacion
-"""
+# Evaluación final
+# Germán Fraga
 
 from tkinter import *
 from tkinter import ttk
@@ -57,7 +54,7 @@ def modify_table(sql, data):
 # ----- FUNCION ALTA DE REGISTRO -----
 def create_record(data):  # tree
     if not data[0] or not data[1] or not data[2] or not data[3]:
-        l_status.config(text="Complete todos los campos.", background="#ff1b1b")
+        l_status.config(text="Complete todos los campos.", background="#FF5656")
     else:
         cadena_dni, cadena_cuil = data[0], data[1]
         patron_dni, patron_cuil = "^\d{7,8}$", "^\d{11}$"
@@ -69,21 +66,21 @@ def create_record(data):  # tree
                         domicilio, f_nacimiento, f_alta, obra, art, jornal) 
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
                 modify_table(sql, data)
+                set_entry([["" for _ in range(11)] for _ in range(1)])
                 l_status.config(
                     text="Los datos han sido guardados correctamente.",
                     background="#B9F582",
                 )
-                set_entry([["" for _ in range(11)] for _ in range(1)])
                 update_treeview(tree)
             else:
                 l_status.config(
-                    text="El DNI ingresado ya esta cargado en la base de datos.",
-                    background="#ff1b1b",
+                    text="El DNI ingresado ya está cargado en la base de datos.",
+                    background="#FF5656",
                 )
                 showerror("ATENCIÓN!!", "El DNI ingresado ya fue cargado.")
         else:
             l_status.config(
-                text="Verifique los datos ingresados.", background="#ff1b1b"
+                text="Verifique los datos ingresados.", background="#FF5656"
             )
             showerror("ATENCIÓN!!", "La informacion cargada es incorrecta.")
 
@@ -91,12 +88,12 @@ def create_record(data):  # tree
 # ----- FUNCION DE BAJA DE REGISTRO -----
 def delete_record(data, tree):
     if not data[0]:
-        showerror("ATENCIÓN!!", "La informacion seleccionada es incorrecta.")
-        l_status.config(text="El campo DNI esta vacio.", background="#ff1b1b")
+        showerror("ATENCIÓN!!", "No se ha seleccionado ningún registro.")
+        l_status.config(text="El campo DNI esta vacio.", background="#FF5656")
     else:
         sql = "DELETE FROM empleados WHERE dni = ?;"
         option = askokcancel(
-            "Borra registro", "¿Esta seguro que quiere eliminar ese registro?"
+            "Borra registro", "¿Está seguro que quiere eliminar ese registro?"
         )
         if option:
             modify_table(sql, (data[0],))
@@ -108,14 +105,39 @@ def delete_record(data, tree):
             )
         else:
             l_status.config(
-                text="Se ha cancelado la eliminacion de los datos.",
+                text="Se ha cancelado la eliminación de los datos.",
                 background="#B9F582",
             )
 
 
 # ----- FUNCION DE MODIFICACION DE REGISTROS -----
-def modify_record():
-    pass
+def modify_record(data, tree):
+    if not data[0]:
+        showerror("ATENCIÓN!!", "No se ha seleccionado ningún registro.")
+        l_status.config(text="El campo DNI esta vacio.", background="#FF5656")
+    else:
+        sql = """UPDATE empleados SET nombres = ?, apellidos = ?, domicilio = ?, 
+                f_nacimiento = ?, f_alta = ?, obra = ?, art = ?, 
+                jornal = ? WHERE dni = ?;"""
+        data.append(data[0])
+        option = askokcancel(
+            "Modifica registro", "¿Está seguro que quiere modificar ese registro?"
+        )
+        if option:
+            for _ in range(2):
+                data.pop(0)
+            modify_table(sql, data)
+            set_entry([["" for _ in range(11)] for _ in range(1)])
+            l_status.config(
+                text="Los datos han sido modificados correctamente.",
+                background="#B9F582",
+            )
+            update_treeview(tree)
+        else:
+            l_status.config(
+                text="Se ha cancelado la modificación de los datos.",
+                background="#B9F582",
+            )
 
 
 # ***** FUNCIONES PARA CONSULTAS Y TREEVIEW *****
@@ -131,18 +153,18 @@ def consult_record(event):
 
 
 # ----- FUNCION DE BUSQUEDA -----
-def search_record(indice):
+def search_record(indice: str):
     sql = "SELECT * from empleados WHERE dni='" + indice + "';"
     data_list = update_table(sql)
     if not data_list:
         l_status.config(
-            text="No se encontro el DNI solicitado en la base de datos.",
+            text="No se encontró el DNI solicitado en la base de datos.",
             background="#ff1b1b",
         )
         showerror("ATENCIÓN!!", "Este DNI no existe en la base de datos")
     else:
         l_status.config(
-            text="La busqueda se concreto correctamente.", background="#B9F582"
+            text="La búsqueda se concreto correctamente.", background="#B9F582"
         )
         set_entry(data_list)
 
@@ -153,7 +175,7 @@ def update_treeview(mitreview, parameter=None):
         sql = "SELECT id, dni, nombres, apellidos, obra, jornal FROM empleados"
     else:
         sql = (
-            "SELECT id, dni, nombres, apellidos, obra as 'Obra', jornal from empleados WHERE obra='"
+            "SELECT id, dni, nombres, apellidos, obra as 'Obra', jornal FROM empleados WHERE obra='"
             + parameter
             + "';"
         )
@@ -172,7 +194,7 @@ def update_treeview(mitreview, parameter=None):
 
 # ----- FUNCION DE CIERRE DE LA APLICACION -----
 def close_app():
-    option = askokcancel("Cerrar la aplicación", "Está seguro que quiere salir?")
+    option = askokcancel("Cerrar la aplicación", "¿Está seguro que quiere salir?")
     if option:
         window.destroy()
 
@@ -185,20 +207,20 @@ def create_list():
     data_list = [
         var_dni.get(),
         var_cuil.get(),
-        var_nombre.get(),
-        var_apellido.get(),
-        var_domicilio.get(),
+        var_nombre.get().capitalize(),
+        var_apellido.get().capitalize(),
+        var_domicilio.get().capitalize(),
         var_fnacimiento.get(),
         var_falta.get(),
-        var_obra.get(),
-        var_art.get(),
+        var_obra.get().capitalize(),
+        var_art.get().capitalize(),
         var_jornal.get(),
     ]
     return data_list
 
 
 # ----- SETEO DE LOS ENTRY -----
-def set_entry(data_list):
+def set_entry(data_list: list):
     var_dni.set(data_list[0][1])
     var_cuil.set(data_list[0][2])
     var_nombre.set(data_list[0][3])
@@ -222,12 +244,16 @@ def set_entry(data_list):
 
 
 info = """
-        Aplicacion para el manejo de una base de datos con 
-        altas, bajas, modificaciones y consultas (CRUD), 
-        para una nomina de empleados con una gran variedad 
+        Aplicación para el manejo de una base de datos con 
+        altas, bajas, modificaciones y consultas (CRUD); 
+        para una nómina de empleados con una gran variedad 
         de datos.
         
-        AUTOR: German Fraga"""
+        AUTOR: Germán Fraga
+
+        Entrega final - Diplomatura Python 3 - Nivel inicial
+        26/12/2023
+        """
 
 # ***** VISTA Y CONTROL *****
 
@@ -274,7 +300,12 @@ btn_baja = Button(
     command=lambda: delete_record(create_list(), tree),
 )
 btn_baja.grid(row=2, column=0, padx=2, pady=9)
-btn_modificacion = Button(frame_menu, text="MODIFICACION", width=15)
+btn_modificacion = Button(
+    frame_menu,
+    text="MODIFICACION",
+    width=15,
+    command=lambda: modify_record(create_list(), tree),
+)
 btn_modificacion.grid(row=3, column=0, padx=2, pady=9)
 btn_consulta = Button(
     frame_menu,
@@ -361,7 +392,9 @@ e_filtro = Entry(frame_tree, textvariable=var_filtro, width=80)
 e_filtro.grid(row=0, column=1)
 
 btn_filtrar = Button(
-    frame_tree, text="Filtrar", command=lambda: update_treeview(tree, var_filtro.get())
+    frame_tree,
+    text="Filtrar",
+    command=lambda: update_treeview(tree, var_filtro.get().capitalize()),
 )
 btn_filtrar.grid(row=0, column=2, sticky=W)
 
@@ -392,7 +425,7 @@ try:
     l_status.config(text="Se ha creado correctamente la base de datos.")
 except:
     l_status.config(
-        text="La base de datos ya esta creada. Se ha accedido correctamente."
+        text="La base de datos ya está creada. Se ha accedido correctamente."
     )
 
 update_treeview(tree)
