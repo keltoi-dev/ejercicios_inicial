@@ -32,7 +32,7 @@ def create_table(conexion):
 
 
 # ----- CONULTA A LA BASE DE DATOS -----
-def update_table(sql):
+def update_table(sql: str):
     conexion = conect_database()
     cursor = conexion.cursor()
     cursor.execute(sql)
@@ -41,7 +41,7 @@ def update_table(sql):
 
 
 # ----- MODIFICACION DE LA BASE DE DATOS -----
-def modify_table(sql, data):
+def modify_table(sql: str, data: list):
     conexion = conect_database()
     cursor = conexion.cursor()
     cursor.execute(sql, data)
@@ -50,7 +50,7 @@ def modify_table(sql, data):
 
 # ***** FUNCIONES PARA ALTAS - BAJAS - MODIFICACIONES *****
 # ----- FUNCION ALTA DE REGISTRO -----
-def create_record(data):  # tree
+def create_record(data: list):
     if not data[0] or not data[1] or not data[2] or not data[3]:
         l_status.config(text="Complete todos los campos.", background="#FF5656")
     else:
@@ -84,7 +84,7 @@ def create_record(data):  # tree
 
 
 # ----- FUNCION DE BAJA DE REGISTRO -----
-def delete_record(data, tree):
+def delete_record(data: list, tree):
     if not data[0]:
         showerror("ATENCIÓN!!", "No se ha seleccionado ningún registro.")
         l_status.config(text="El campo DNI esta vacio.", background="#FF5656")
@@ -109,7 +109,7 @@ def delete_record(data, tree):
 
 
 # ----- FUNCION DE MODIFICACION DE REGISTROS -----
-def modify_record(data, tree):
+def modify_record(data: list, tree):
     if not data[0]:
         showerror("ATENCIÓN!!", "No se ha seleccionado ningún registro.")
         l_status.config(text="El campo DNI esta vacio.", background="#FF5656")
@@ -139,8 +139,6 @@ def modify_record(data, tree):
 
 
 # ***** FUNCIONES PARA CONSULTAS Y TREEVIEW *****
-
-
 # ----- FUNCION DE CONSULTA DESDE TREEVIEW -----
 def consult_record(event):
     item = tree.item(tree.selection())
@@ -198,8 +196,6 @@ def close_app():
 
 
 # ***** MANIPULACION DE DATOS *****
-
-
 # ----- CREACION DE UNA LISTA PARA MOVIMIENTO DE LOS DATOS -----
 def create_list():
     data_list = [
@@ -241,6 +237,7 @@ def set_entry(data_list: list):
         e_cuil.config(state="disabled")
 
 
+# ----- DECLARACION DE TEXTO PARA VENTANA ACERCA DE ... -----
 info = """
         Aplicación para el manejo de una base de datos con 
         altas, bajas, modificaciones y consultas (CRUD); 
