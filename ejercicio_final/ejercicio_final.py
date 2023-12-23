@@ -277,10 +277,10 @@ var_obra, var_art = StringVar(), StringVar()
 var_jornal, var_filtro = StringVar(), StringVar()
 
 # ----- FRAME DE MENU -----
-frame_menu = Frame(window, bg="#c8c8c8", padx=10, pady=10, bd=1, relief="solid")
+frame_menu = Frame(window, bg="#a1a1a1", padx=10, pady=10, bd=1, relief="solid")
 frame_menu.grid(row=1, column=0)
 
-Label(frame_menu, text="MENU", bg="#c8c8c8", font="Bold").grid(
+Label(frame_menu, text="MENU", bg="#a1a1a1", font="Bold").grid(
     row=0, column=0, sticky=W + E
 )
 
@@ -372,7 +372,11 @@ e_jornal = Entry(frame_datos, textvariable=var_jornal, width=15)
 e_jornal.grid(row=8, column=1)
 
 btn_buscar = Button(
-    frame_datos, text="Buscar", width=6, command=lambda: search_record(var_dni.get())
+    frame_datos,
+    text="Buscar",
+    width=6,
+    bg="#a1a1a1",
+    command=lambda: search_record(var_dni.get()),
 )
 btn_buscar.grid(row=1, column=2, sticky=W)
 
@@ -389,6 +393,7 @@ e_filtro.grid(row=0, column=1)
 btn_filtrar = Button(
     frame_tree,
     text="Filtrar",
+    bg="#a1a1a1",
     command=lambda: update_treeview(tree, var_filtro.get().capitalize()),
 )
 btn_filtrar.grid(row=0, column=2, sticky=W)
