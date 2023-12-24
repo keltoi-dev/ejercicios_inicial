@@ -168,12 +168,12 @@ def search_record(indice: str):
 # ----- FUNCION ACTUALIZAR TREEVIEW -----
 def update_treeview(mitreview, parameter=None):
     if not parameter:
-        sql = "SELECT id, dni, nombres, apellidos, obra, jornal FROM empleados"
+        sql = "SELECT id, dni, nombres, apellidos, obra, jornal FROM empleados ORDER BY id DESC;"
     else:
         sql = (
             "SELECT id, dni, nombres, apellidos, obra as 'Obra', jornal FROM empleados WHERE obra='"
             + parameter
-            + "';"
+            + "' ORDER BY id DESC;"
         )
     data_list = update_table(sql)
 
@@ -201,13 +201,13 @@ def create_list():
     data_list = [
         var_dni.get(),
         var_cuil.get(),
-        var_nombre.get().capitalize(),
-        var_apellido.get().capitalize(),
-        var_domicilio.get().capitalize(),
+        var_nombre.get(),
+        var_apellido.get(),
+        var_domicilio.get(),
         var_fnacimiento.get(),
         var_falta.get(),
         var_obra.get().capitalize(),
-        var_art.get().capitalize(),
+        var_art.get(),
         var_jornal.get(),
     ]
     return data_list
